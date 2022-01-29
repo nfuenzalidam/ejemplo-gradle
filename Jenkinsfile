@@ -1,77 +1,47 @@
-import groovy.json.JsonSlurperClassic
-def jsonParse(def json) {
-    new groovy.json.JsonSlurperClassic().parseText(json)
-}
 pipeline {
     agent any
     stages {
-        stage("Paso 1: Compliar"){
+        stage("Pipeline"){
             steps {
-                script {
-                sh "echo 'Compile Code!'"
-                // Run Maven on a Unix agent.
-                sh "mvn clean compile -e"
-                }
-            }
-        }
-        stage("Paso 2: Testear"){
-            steps {
-                script {
-                sh "echo 'Test Code!'"
-                // Run Maven on a Unix agent.
-                sh "mvn clean test -e"
-                }
-            }
-        }
-        stage("Paso 3: Build .Jar"){
-            steps {
-                script {
-                sh "echo 'Build .Jar!'"
-                // Run Maven on a Unix agent.
-                sh "mvn clean package -e"
+                script{
+                    stage("Paso 0: Download Code and checkout"){
+                        // code
+                    }
+                    stage("Paso 1: Build && Test"){
+                        // code
+                    }
+                    stage("Paso 2: Sonar - Análisis Estático"){
+                        sh "echo 'Análisis Estático!'"
+                        // code
+                    }
+                    stage("Paso 3: Curl Springboot Gradle sleep 20"){
+                        // code
+                    }
+                    stage("Paso 4: Subir Nexus"){
+                        // code
+                    }
+                    stage("Paso 5: Descargar Nexus"){
+                        // code
+                    }
+                    stage("Paso 6: Levantar Artefacto Jar"){
+                        // code
+                    }
+                    stage("Paso 7: Testear Artefacto - Dormir(Esperar 20sg) "){
+                        // code
+                    }
                 }
             }
             post {
-                //record the test results and archive the jar file.
+                always {
+                    sh "echo 'fase always executed post'"
+                }
                 success {
-                    archiveArtifacts artifacts:'build/*.jar'
+                    sh "echo 'fase success'"
+                }
+                failure {
+                    sh "echo 'fase failure'"
                 }
             }
-        }
-        stage("Paso 4: Análisis SonarQube"){
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh "echo 'Calling sonar Service in another docker container!'"
-                    // Run Maven on a Unix agent to execute Sonar.
-                    sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=github-sonar'
-                }
-            }
-        }
-        stage("Paso 5: Levantar Springboot APP"){
-            steps {
-                sh 'mvn spring-boot:run &'
-            }
-        }
-        stage("Paso 6: Dormir(Esperar 30sg) "){
-            steps {
-                sh 'sleep 30'
-            }
-        }
-        stage("Paso 7: Test Alive Service - Testing Application!"){
-            steps {
-                sh 'curl -X GET "http://localhost:8081/rest/mscovid/test?msg=testing"'
-            }
-        }
-    }
-    post {
-        always {
-            sh "echo 'fase always executed post'"
-        }
-        success {
-            sh "echo 'fase success'"
-        }
-        failure {
-            sh "echo 'fase failure'"
         }
     }
 }
