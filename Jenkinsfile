@@ -25,7 +25,7 @@ pipeline {
                         sh "echo 'Análisis Estático!'"
                         withSonarQubeEnv('sonarqube') {
                             sh "echo 'Calling sonar by ID!'"
-                            // Run Maven on a Unix agent to execute Sonar.
+                            // Run Gradle on a Unix agent to execute Sonar.
                             sh './gradlew sonarqube -Dsonar.projectKey=ejemplo-gradle -Dsonar.java.binaries=build'
                         }
                     }
