@@ -28,6 +28,14 @@ pipeline {
                     }
                 }
             }
+            post{
+                success{
+                    slackSend color: 'good', message: "[Nestor Fuenzalida] [${JOB_NAME}] [${BUILD_TAG}] Ejecucion Exitosa", teamDomain: 'dipdevopsusac-tr94431', tokenCredentialId: 'slack-token'
+                }
+                failure{
+                    slackSend color: 'danger', message: "[Nestor Fuenzalida] [${env.JOB_NAME}] [${BUILD_TAG}] Ejecucion fallida en stage [${env.TAREA}]", teamDomain: 'dipdevopsusac-tr94431', tokenCredentialId: 'slack-token'
+                }
+            }
         }
     }
 }
